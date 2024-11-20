@@ -27,6 +27,14 @@ function App() {
       element: <Dashboard />,
       children: [
         {
+          index: true,
+          element: (
+            <div className="w-full h-full flex justify-center items-center">
+              <h1 className="text-5xl font-semibold">Welcome to Dashboard</h1>
+            </div>
+          ),
+        },
+        {
           path: "notes",
           element: <Notes />,
         },
