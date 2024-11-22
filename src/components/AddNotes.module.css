@@ -1,0 +1,72 @@
+.popUp {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #00000049;
+  backdrop-filter: blur(3px);
+}
+
+/* .note{
+    background-color: lime;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+} */
+
+.note {
+  width: 20%;
+  height: 15rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: space-between; /* Ensure options stay at the bottom */
+  border: 1px solid var(--secondary-color);
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--secondary-color);
+  transition: all .28s linear;
+
+  h2{
+    overflow: hidden;;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    word-wrap: break-word;
+    display:-webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+  }
+
+  p {
+    color: var(--text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    word-break: break-all;
+    word-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5; /* Limit to 8 lines */
+  }
+
+  &:hover  {
+    border: 1px solid white;
+  }
+
+  &:hover .noteOptions {
+    opacity: 1;
+  }
+}
+
+.noteOptions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Spread buttons evenly */
+  padding: 8px 12px; /* Add spacing inside the options section */
+  transition: all 0.28s linear;
+  opacity: 0;
+}

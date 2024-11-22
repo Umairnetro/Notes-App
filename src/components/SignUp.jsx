@@ -1,24 +1,20 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import app from "../config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import Loader from "./Loader";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    showLoader,
-    setShowLoader,
-    showMessage,
-    setShowMessage,
-  } = useContext(AuthContext);
+  const { auth, showMessage, setShowMessage, showLoader, setShowLoader } =
+    useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
   const navigate = useNavigate();
 
-  const auth = getAuth(app);
+  console.log(auth);
+
   const handleSignUp = async () => {
     try {
       setShowLoader(true);
@@ -33,9 +29,9 @@ const SignUp = () => {
     } catch (error) {
       console.log(error);
       if (error.code === "auth/email-already-in-use") {
-        setShowMessage("Email already in use");
+        setShowMessage("email already in use");
       } else if (error.code === "auth/invalid-email") {
-        setShowMessage("Please enter a valid email");
+        setShowMessage("please enter a valid email");
       }
     } finally {
       setShowLoader(false);
@@ -55,16 +51,19 @@ const SignUp = () => {
           required
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          className="bg-gray-200 border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
-          type="text"
-          placeholder="password"
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {showMessage && (
-          <p className="text-red-500 before:content-['*']">{showMessage}</p>
-        )}
+        <div className="flex flex-col">
+          <input
+            className="bg-gray-200 flex-grow border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
+            type="text"
+            placeholder="password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {showMessage && (
+            <p className="text-red-500 before:content-['*']">{showMessage}</p>
+          )}
+        </div>
+
         <button
           onClick={handleSignUp}
           className="bg-[#2c4646] text-white px-5 py-2 rounded-full border-2 border-[#2c4646] hover:bg-transparent hover:text-[#2c4646] duration-300 self-center"
@@ -74,7 +73,11 @@ const SignUp = () => {
       </div>
       <p className="mt-2">
         Already have an account?&nbsp;
-        <Link to="/login" className="hover:text-gray-400 underline">
+        <Link
+          to="/login"
+          onClick={() => setShowMessage("")}
+          className="hover:text-gray-400 underline"
+        >
           Login
         </Link>
       </p>

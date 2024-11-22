@@ -1,6 +1,6 @@
 /* HTML: <div class="loader"></div> */
 .loaderBG {
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
 }
 
 .loader {

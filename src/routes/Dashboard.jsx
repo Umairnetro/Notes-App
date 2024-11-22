@@ -3,15 +3,16 @@ import { FaRegNoteSticky } from "react-icons/fa6";
 import styles from "./Dashboard.module.css";
 import { FiSend } from "react-icons/fi";
 import { MdOutlineLogout } from "react-icons/md";
+import logo from '../assets/Netro.png'
 
 const dashboard = () => {
   return (
     <div className={`${styles.dashboard}`}>
       <div
-        className={`${styles.sidebar} flex flex-col items-center justify-between py-6`}
+        className={`${styles.sidebar} flex flex-col items-center justify-between py-6 relative`}
       >
-        <div id={`${styles.logo}`} className=" font-semibold">
-          NETRO
+        <div id={`${styles.logo}`} className=" font-semibold w-[50%]">
+          <img src={logo} alt="" className="w-[100%]" />
         </div>
         <div
           className={`${styles.noteSection} flex items-center flex-col gap-3`}
