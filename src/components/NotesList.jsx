@@ -13,7 +13,7 @@ import { MdDelete } from "react-icons/md";
 import { FaShareSquare } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
-const NotesList = ({ currentUser }) => {
+const NotesList = ({ currentUser, onEdit }) => {
   const [notes, setNotes] = useState([]);
   const { showLoader, setShowLoader } = useAuth();
 
@@ -46,7 +46,6 @@ const NotesList = ({ currentUser }) => {
     return () => unsubscribe();
   }, [currentUser]);
 
-
   return (
     <>
       <div className="flex justify-center items-start gap-4 mt-10 flex-wrap bg-[#30363b]">
@@ -56,6 +55,11 @@ const NotesList = ({ currentUser }) => {
               <div
                 key={note.id}
                 className={` ${styles.note} flex flex-col w-[20%] min-h-[200px] overflow-hidden border-2 border-red-400 rounded-md`}
+                onClick={() => {
+                  onEdit(note);
+                  console.log({note});
+                  
+                }}
               >
                 <div className="px-3 py-1">
                   <h2 className="font-semibold text-2xl mb-1">{note.title}</h2>

@@ -1,20 +1,34 @@
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import styles from "./AddNotes.module.css";
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
 import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
-const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
+const AddNotes = ({
+  currentUser,
+  editingNote,
+  setEditibleNote,
+  showPopup,
+  setShowPopup,
+}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
   const { showLoader, setShowLoader } = useAuth();
+
+  console.log(editingNote, Boolean(editingNote));
 
   useEffect(() => {
     if (editingNote) {
       setTitle(editingNote.title);
       setContent(editingNote.content);
+      setShowPopup(true);
     } else {
       setTitle("");
       setContent("");
@@ -31,24 +45,36 @@ const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
       alert("Please login to add notes.");
       return;
     }
+
     try {
+      console.log("LET ME IN =====");
+      console.log("=====", Boolean(title), Boolean(content));
       if (!title || !content) {
+        console.log("=====", Boolean(title), Boolean(content));
         alert("Please enter title and content.");
-        setShowLoader(false);
         return;
+
+        setShowLoader(false);
       }
-      await addDoc(collection(db, "notes"), {
-        title,
-        content,
-        userId: currentUser.uid,
-        timestamp: Timestamp.now(),
-      });
 
-      setTitle("");
-      setContent("");
+      if (editingNote) {
+        const noteRef = doc(db, "notes", editingNote.id);
+        console.log({ noteRef });
 
-      console.log("Note added successfully!");
-      setShowPopup(false);
+        await updateDoc(noteRef, {
+          title,
+          content,
+          Timestamp: Timestamp.now(),
+        });
+      } else {
+        await addDoc(collection(db, "notes"), {
+          title,
+          content,
+          userId: currentUser.uid,
+          timestamp: Timestamp.now(),
+        });
+        console.log("Note added successfully!");
+      }
     } catch (error) {
       console.log("Error adding note:", error);
     } finally {
@@ -56,17 +82,24 @@ const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
     }
   };
 
+  const handleClose = () => {
+    setShowPopup(false);
+    setEditibleNote(null);
+  };
+
   return (
     <>
       <div
         className={`${styles.noteContainer} flex justify-center w-full pt-10`}
+        onClick={handlePopup}
       >
-        <p
-          className={` bg-gray-400 border-2 text-gray-700 w-1/2 px-5 py-3 rounded-full cursor-pointer`}
-          onClick={handlePopup}
-        >
-          Take a note...
-        </p>
+        {!editingNote && (
+          <p
+            className={`bg-gray-400 border-2 text-gray-700 w-1/2 px-5 py-3 rounded-full cursor-pointer`}
+          >
+            Take a note...
+          </p>
+        )}
       </div>
       {showPopup && (
         <div
@@ -79,7 +112,11 @@ const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
               type="text"
               placeholder="Heading"
               className="bg-transparent outline-none text-3xl placeholder:font-bold font-bold"
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                console.log(title);
+              }}
+              value={title}
             />
             <textarea
               id=""
@@ -87,6 +124,7 @@ const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
               className="bg-transparent outline-none resize-none"
               rows={7}
               onChange={(e) => setContent(e.target.value)}
+              value={content}
             ></textarea>
             <div className={`btn-group flex justify-end gap-2`}>
               <button
@@ -97,9 +135,7 @@ const AddNotes = ({ currentUser, editingNote, onClose, onSave }) => {
               </button>
               <button
                 className="px-4 py-1 rounded-md bg-[#2c4646]"
-                onClick={() => {
-                  setShowPopup(false);
-                }}
+                onClick={handleClose}
               >
                 Close
               </button>
