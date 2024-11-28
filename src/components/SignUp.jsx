@@ -16,6 +16,16 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
+    if (!username & !email && !password) {
+      setShowMessage("Please fill in all fields.");
+      return;
+    }
+
+    if (!username || username.length < 3) {
+      setShowMessage("Username must be at least 3 characters long.");
+      return;
+    }
+
     try {
       setShowLoader(true);
       const userCredential = await createUserWithEmailAndPassword(

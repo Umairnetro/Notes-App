@@ -33,13 +33,6 @@ const dashboard = () => {
 
   return (
     <>
-      <button
-        className=" fixed top-5 right-5 bg-gray-500 px-3 py-2 rounded-lg"
-        onClick={fetchUserData}
-      >
-        Click me
-      </button>
-
       <div className={`${styles.dashboard}`}>
         <div
           className={`${styles.sidebar} flex flex-col items-center justify-between py-6 relative`}
