@@ -48,6 +48,8 @@ const Notes = () => {
           const noteRef = doc(db, "notes", noteToDelete);
           await deleteDoc(noteRef);
           setConfirm(null)
+          setNoteToDelete(null);
+          setAlertMessage("Note deleted successfully!");
         }
       } catch (error) {
         console.log(error);

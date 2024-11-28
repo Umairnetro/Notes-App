@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const Alert = ({ message, duration = 3000,  onConfirm, onCancel }) => {
+const Alert = ({ message, onConfirm, onCancel }) => {
   const [visible, setVisible] = useState(true);
-  const { setAlertMessage, noteToDelete } = useAuth();
+  const { setAlertMessage, noteToDelete, setNoteToDelete } = useAuth();
+  const duration = noteToDelete ? 10000 : 3000;
 
   console.log(noteToDelete);
-  
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
       setAlertMessage(null);
-      console.log(visible);
-      
+      console.log(">>>>>>>>", visible);
     }, duration);
     return () => {
       clearTimeout(timer);
     };
-  }, [duration, setAlertMessage]);
-
+  }, [duration, setAlertMessage, setVisible, setNoteToDelete]);
 
   return (
     <div
