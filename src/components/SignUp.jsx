@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import Loader from "./Loader";
 import { useAuth } from "../context/AuthContext";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const SignUp = () => {
   const { auth, showMessage, setShowMessage, showLoader, setShowLoader } =
@@ -13,8 +15,6 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  console.log(auth);
-
   const handleSignUp = async () => {
     try {
       setShowLoader(true);
@@ -23,15 +23,33 @@ const SignUp = () => {
         email,
         password
       );
+
       const user = userCredential.user;
-      console.log(user);
+
+      console.log("User object:", user);
+
+      await updateProfile(user, {
+        displayName: username,
+      });
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: username,
+        createdDate: new Date(),
+      });
+
+      setShowMessage("Sign up successful");
       navigate("/login");
     } catch (error) {
       console.log(error);
+
       if (error.code === "auth/email-already-in-use") {
-        setShowMessage("email already in use");
+        setShowMessage("Email already in use");
       } else if (error.code === "auth/invalid-email") {
-        setShowMessage("please enter a valid email");
+        setShowMessage("Please enter a valid email");
+      } else {
+        setShowMessage("Something went wrong, please try again");
       }
     } finally {
       setShowLoader(false);
@@ -44,6 +62,13 @@ const SignUp = () => {
         <h2 className="text-3xl text-[#3d6969] upper text-center font-medium mb-2">
           Sign up
         </h2>
+        <input
+          className="bg-gray-200 border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
+          type="text"
+          placeholder="Username"
+          required
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <input
           className="bg-gray-200 border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
           type="email"

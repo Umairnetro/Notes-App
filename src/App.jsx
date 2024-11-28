@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./routes/Dashboard";
 import Notes from "./routes/Notes";
 import Receive from "./routes/Receive";
+import Welcome from "./routes/Welcome";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,11 +29,7 @@ function App() {
       children: [
         {
           index: true,
-          element: (
-            <div className="w-full h-full flex justify-center items-center">
-              <h1 className="text-5xl font-semibold">Welcome to Dashboard</h1>
-            </div>
-          ),
+          element: <Welcome />,
         },
         {
           path: "notes",

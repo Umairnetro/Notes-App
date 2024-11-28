@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -13,9 +14,10 @@ import { MdDelete } from "react-icons/md";
 import { FaShareSquare } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
-const NotesList = ({ currentUser, onEdit }) => {
+const NotesList = ({ currentUser, onEdit, onDelete }) => {
   const [notes, setNotes] = useState([]);
-  const { showLoader, setShowLoader } = useAuth();
+  const { showLoader, setShowLoader, setAlertMessage, confirm, setConfirm } =
+    useAuth();
 
   useEffect(() => {
     setShowLoader(true);
@@ -57,8 +59,7 @@ const NotesList = ({ currentUser, onEdit }) => {
                 className={` ${styles.note} flex flex-col w-[20%] min-h-[200px] overflow-hidden border-2 border-red-400 rounded-md`}
                 onClick={() => {
                   onEdit(note);
-                  console.log({note});
-                  
+                  console.log({ note });
                 }}
               >
                 <div className="px-3 py-1">
@@ -68,7 +69,13 @@ const NotesList = ({ currentUser, onEdit }) => {
                   </p>
                 </div>
                 <div className={`${styles.noteOptions}`}>
-                  <button className="delete">
+                  <button
+                    className="delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(note.id);
+                    }}
+                  >
                     <MdDelete
                       className={"text-xl hover:text-red-500 duration-300"}
                       title="Delete"
@@ -86,7 +93,6 @@ const NotesList = ({ currentUser, onEdit }) => {
           );
         })}
       </div>
-      {/* {showLoader && <Loader />} */}
     </>
   );
 };

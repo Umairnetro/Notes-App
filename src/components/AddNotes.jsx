@@ -20,9 +20,7 @@ const AddNotes = ({
 }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { showLoader, setShowLoader } = useAuth();
-
-  console.log(editingNote, Boolean(editingNote));
+  const { showLoader, setShowLoader, setAlertMessage } = useAuth();
 
   useEffect(() => {
     if (editingNote) {
@@ -42,43 +40,39 @@ const AddNotes = ({
   const handleAddNote = async () => {
     setShowLoader(true);
     if (!currentUser) {
-      alert("Please login to add notes.");
+      setAlertMessage("Please login to add notes.");
       return;
     }
 
     try {
-      console.log("LET ME IN =====");
-      console.log("=====", Boolean(title), Boolean(content));
-      if (!title || !content) {
-        console.log("=====", Boolean(title), Boolean(content));
-        alert("Please enter title and content.");
-        return;
-
-        setShowLoader(false);
-      }
-
       if (editingNote) {
         const noteRef = doc(db, "notes", editingNote.id);
-        console.log({ noteRef });
 
         await updateDoc(noteRef, {
           title,
           content,
           Timestamp: Timestamp.now(),
         });
-      } else {
+        setAlertMessage("Note updated successfully!");
+        setEditibleNote(null);
+        setShowPopup(false);
+        setShowLoader(false);
+      } else if (title || content) {
         await addDoc(collection(db, "notes"), {
           title,
           content,
           userId: currentUser.uid,
           timestamp: Timestamp.now(),
         });
-        console.log("Note added successfully!");
+        setAlertMessage("Note added successfully!");
+        setShowPopup(false);
+        setShowLoader(false);
+      } else {
+        setAlertMessage("Please enter a title and content.");
+        setShowLoader(false);
       }
     } catch (error) {
       console.log("Error adding note:", error);
-    } finally {
-      setShowLoader(false);
     }
   };
 
@@ -90,16 +84,14 @@ const AddNotes = ({
   return (
     <>
       <div
-        className={`${styles.noteContainer} flex justify-center w-full pt-10`}
-        onClick={handlePopup}
+        className={`${styles.noteContainer} flex justify-center w-full pt-28`}
       >
-        {!editingNote && (
-          <p
-            className={`bg-gray-400 border-2 text-gray-700 w-1/2 px-5 py-3 rounded-full cursor-pointer`}
-          >
-            Take a note...
-          </p>
-        )}
+        <p
+          className={`bg-gray-400 border-2 text-gray-700 w-1/2 px-5 py-3 rounded-full cursor-pointer`}
+          onClick={handlePopup}
+        >
+          Take a note...
+        </p>
       </div>
       {showPopup && (
         <div
@@ -114,7 +106,6 @@ const AddNotes = ({
               className="bg-transparent outline-none text-3xl placeholder:font-bold font-bold"
               onChange={(e) => {
                 setTitle(e.target.value);
-                console.log(title);
               }}
               value={title}
             />
@@ -131,7 +122,7 @@ const AddNotes = ({
                 className="px-4 py-1 rounded-md bg-[#2c4646]"
                 onClick={handleAddNote}
               >
-                Add
+                { editingNote ? "Update" : "Add"}
               </button>
               <button
                 className="px-4 py-1 rounded-md bg-[#2c4646]"
