@@ -12,7 +12,6 @@ const Alert = ({ message, onConfirm, onCancel }) => {
     const timer = setTimeout(() => {
       setVisible(false);
       setAlertMessage(null);
-      console.log(">>>>>>>>", visible);
     }, duration);
     return () => {
       clearTimeout(timer);

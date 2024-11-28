@@ -31,6 +31,7 @@ const Notes = () => {
   const handleCancel = () => {
     setConfirm(false);
     setNoteToDelete(null);
+    setAlertMessage(null);
   };
 
   const handleConfirm = () => {

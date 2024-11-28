@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FaRegNoteSticky } from "react-icons/fa6";
 import styles from "./Dashboard.module.css";
 import { FiSend } from "react-icons/fi";
@@ -10,7 +10,9 @@ import { db } from "../config/firebase";
 import { useEffect } from "react";
 
 const dashboard = () => {
-  const { currentUser, setUsername } = useAuth();
+  const { currentUser, setUsername, logOut, setShowLoader } = useAuth();
+  const navigate = useNavigate();
+
 
   const fetchUserData = async () => {
     if (currentUser) {
@@ -26,6 +28,10 @@ const dashboard = () => {
   };
 
   useEffect(() => {
+    if(!currentUser){
+      navigate("/")
+    }
+    
     if (currentUser) {
       fetchUserData();
     }
@@ -70,6 +76,7 @@ const dashboard = () => {
             id="logout"
             className=" bg-red-600 hover:bg-red-500 p-2 rounded-lg"
             title="Logout"
+            onClick={logOut}
           >
             <MdOutlineLogout className="text-3xl" />
           </div>

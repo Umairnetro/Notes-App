@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../config/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -21,6 +22,16 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const logOut = async () => {
+    try{
+      await signOut(auth)
+      setAlertMessage("User logged out successfully!");
+    } catch(error){
+      setAlertMessage("Error logging out!");
+    }
+  }
+  
+  
   return (
     <AuthContext.Provider
       value={{
@@ -38,6 +49,7 @@ export const AuthProvider = ({ children }) => {
         setNoteToDelete,
         setUsername,
         username,
+        logOut,
       }}
     >
       {children}

@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext";
 
 const Welcome = () => {
   const { username } = useAuth();
-  console.log(username);
   
   return (
     <div className="w-full h-full flex justify-center items-center">
