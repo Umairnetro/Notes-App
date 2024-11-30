@@ -89,7 +89,7 @@ const SignUp = () => {
         <div className="flex flex-col">
           <input
             className="bg-gray-200 flex-grow border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
-            type="text"
+            type="password"
             placeholder="password"
             required
             onChange={(e) => setPassword(e.target.value)}
