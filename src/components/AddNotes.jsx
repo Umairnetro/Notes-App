@@ -67,6 +67,9 @@ const AddNotes = ({
         setAlertMessage("Note added successfully!");
         setShowPopup(false);
         setShowLoader(false);
+
+        setTitle("");
+        setContent("");
       } else {
         setAlertMessage("Please enter a title and content.");
         setShowLoader(false);
@@ -134,7 +137,6 @@ const AddNotes = ({
           </div>
         </div>
       )}
-      {showLoader && <Loader />}
     </>
   );
 };

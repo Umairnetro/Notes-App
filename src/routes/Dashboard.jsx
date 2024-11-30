@@ -8,11 +8,18 @@ import { useAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useEffect } from "react";
+import Loader from "../components/Loader";
 
 const dashboard = () => {
-  const { currentUser, setUsername, logOut, setShowLoader } = useAuth();
+  const {
+    currentUser,
+    setUsername,
+    logOut,
+    authLoader,
+    showLoader,
+    setShowLoader,
+  } = useAuth();
   const navigate = useNavigate();
-
 
   const fetchUserData = async () => {
     if (currentUser) {
@@ -28,17 +35,21 @@ const dashboard = () => {
   };
 
   useEffect(() => {
-    if(!currentUser){
-      navigate("/")
+    if (!authLoader && !currentUser) {
+      navigate("/login");
+      console.log("User not logged in");
+      console.log(currentUser);
     }
-    
-    if (currentUser) {
-      fetchUserData();
-    }
+  }, [currentUser, authLoader, navigate]);
+
+  useEffect(() => {
+    setShowLoader(true);
+    fetchUserData().then(() => setShowLoader(false));
   }, [currentUser]);
 
   return (
     <>
+      {showLoader && <Loader />}
       <div className={`${styles.dashboard}`}>
         <div
           className={`${styles.sidebar} flex flex-col items-center justify-between py-6 relative`}

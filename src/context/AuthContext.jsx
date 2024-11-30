@@ -7,31 +7,30 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
+  const [authLoader, setAuthLoader] = useState(true);
   const [showMessage, setShowMessage] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [confirm, setConfirm] = useState(null);
   const [noteToDelete, setNoteToDelete] = useState(null);
-  const [username, setUsername] = useState("")
-
-  
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setAuthLoader(false)
     });
     return () => unsubscribe();
   }, []);
 
   const logOut = async () => {
-    try{
-      await signOut(auth)
+    try {
+      await signOut(auth);
       setAlertMessage("User logged out successfully!");
-    } catch(error){
+    } catch (error) {
       setAlertMessage("Error logging out!");
     }
-  }
-  
-  
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -50,6 +49,8 @@ export const AuthProvider = ({ children }) => {
         setUsername,
         username,
         logOut,
+        authLoader,
+        setAuthLoader,
       }}
     >
       {children}
