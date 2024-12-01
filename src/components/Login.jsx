@@ -72,7 +72,7 @@ const Login = () => {
         <div className="flex flex-col">
           <input
             className="bg-gray-200 border-2 border-gray-300 rounded-full px-3 py-2 focus:border-[#3d6969] outline-none text-gray-600 duration-300"
-            type="text"
+            type="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
