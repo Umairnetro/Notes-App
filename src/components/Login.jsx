@@ -5,19 +5,20 @@ import { AuthContext } from "../context/AuthContext";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const {
     showLoader,
     setShowLoader,
     showMessage,
     setShowMessage,
     auth,
+    authLoader,
+    setAuthLoader,
+    currentUser,
   } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  
-  
   useEffect(() => {
     setShowMessage(null);
   }, []);
@@ -46,6 +47,15 @@ const Login = () => {
       setShowLoader(false);
     }
   };
+
+  useEffect(() => {
+    setAuthLoader(true);
+    if (authLoader && currentUser) {
+      navigate("/dashboard");
+      console.log("User not logged in");
+      console.log(currentUser);
+    }
+  }, [currentUser, authLoader, navigate]);
 
   return (
     <>

@@ -7,8 +7,16 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 const SignUp = () => {
-  const { auth, showMessage, setShowMessage, showLoader, setShowLoader } =
-    useAuth();
+  const {
+    auth,
+    showMessage,
+    setShowMessage,
+    showLoader,
+    setShowLoader,
+    setAuthLoader,
+    authLoader,
+    currentUser,
+  } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -65,6 +73,15 @@ const SignUp = () => {
       setShowLoader(false);
     }
   };
+
+  useEffect(() => {
+    setAuthLoader(true);
+    if (authLoader && currentUser) {
+      navigate("/dashboard");
+      console.log("User not logged in");
+      console.log(currentUser);
+    }
+  }, [currentUser, authLoader, navigate]);
 
   return (
     <>
